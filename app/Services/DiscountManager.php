@@ -81,31 +81,31 @@ class DiscountManager
      * @return array|bool  - the discount as an array if rule applies on order, boolean false otherwise
      */
     public function percentDiscountWhenTotalAmountOverThreshold(array $order, DiscountRule $rule) {
-        $customer = $this->customerRepository->getCustomerById($order['customer-id']);
 
+        $response = [
+            'discount_type' => $rule->type->handle,
+            'discount_type_description' => $rule->type->description,
+        ];
+
+        $customer = $this->customerRepository->getCustomerById($order['customer-id']);
         if ($this->validateIfRuleApplies($customer->revenue, $rule->threshold, $rule->operator) === false) {
             return false;
         }
 
         //If we got this far it means the rule actually applies to the order so compute the discount
-        $discount = 0;
-
         if ($rule->applies == 'whole_order') {
-            $discount = $order['total'] * $rule->percentage / 100;
+            $response['discount_amount'] = $order['total'] * $rule->percentage / 100;
         }
 
         if ($rule->applies == 'cheapest_product') {
-            $cheapestProduct = $this->getCheapestProductPrice($order);
-            $discount = $cheapestProduct * $rule->percentage / 100;
+            $response['cheapest_product_price'] = $this->getCheapestProductPrice($order);
+            $response['discount_amount'] = $response['cheapest_product_price'] * $rule->percentage / 100;
         }
 
-        return [
-            'discount_type' => $rule->type->handle,
-            'discount' => $discount,
-            'discount_type_description' => $rule->type->description,
-            'customer_revenue' => $customer->revenue,
-            'discount_rule' => $rule->toArray(),
-        ];
+        $response['customer_revenue'] = $customer->revenue;
+        $response['discount_rule'] = $rule->toArray();
+
+        return $response;
     }
 
     /**
@@ -114,7 +114,7 @@ class DiscountManager
      * @return array|bool - the discount as an array if rule applies on order, boolean false otherwise
      */
     public function freeProductWhenQuantityOfCertainCategoryOverThreshold(array $order, DiscountRule $rule) {
-        $discount = false;
+        $response = false;
 
         $numExtraItems = [];
         foreach ($order['items'] as $item) {
@@ -125,20 +125,17 @@ class DiscountManager
         }
 
         if (!empty($numExtraItems)) {
-
-            $discount = [
+            $response = [
                 'discount_type' => $rule->type->handle,
+                'discount_type_description' => $rule->type->description,
                 'discount' => 'extra_items',
                 'extra_items' => $numExtraItems,
-                'discount_type_description' => $rule->type->description,
                 'discount_rule' => $rule->toArray(),
 
             ];
-
-            return $discount;
         }
 
-        return $discount;
+        return $response;
     }
 
     /**
@@ -147,28 +144,30 @@ class DiscountManager
      * @return array|bool - the discount as an array if rule applies on order, boolean false otherwise
      */
     public function percentageDiscountWhenQuantityOfCertainCategoryOverThreshold(array $order, DiscountRule $rule) {
-        $quantityOfCategory = $this->getQuantityOfProductsWithRuleCategory($order['items'], $rule->category);
+
+        $response = [
+            'discount_type' => $rule->type->handle,
+            'discount_type_description' => $rule->type->description,
+        ];
 
         //If the rule does not apply on the current order, return false
+        $quantityOfCategory = $this->getQuantityOfProductsWithRuleCategory($order['items'], $rule->category);
         if ($this->validateIfRuleApplies($quantityOfCategory, $rule->quantity, $rule->operator) === false) {
             return false;
         }
 
         if ($rule->applies == 'whole_order') {
-            $discount = $order['total'] * $rule->percentage / 100;
+            $response['discount_amount'] = $order['total'] * $rule->percentage / 100;
         }
 
         if ($rule->applies == 'cheapest_product') {
-            $cheapestProduct = $this->getCheapestProductPrice($order);
-            $discount = $cheapestProduct * $rule->percentage / 100;
+            $response['cheapest_product_price'] = $this->getCheapestProductPrice($order);
+            $response['discount_amount'] = $response['cheapest_product_price'] * $rule->percentage / 100;
         }
 
-        return [
-            'discount_type' => $rule->type->handle,
-            'discount' => $discount,
-            'discount_type_description' => $rule->type->description,
-            'discount_rule' => $rule->toArray(),
-        ];
+        $response['discount_rule'] = $rule->toArray();
+
+        return $response;
     }
 
     /**
@@ -194,10 +193,10 @@ class DiscountManager
      * @return float $min - minimum unit price in order
      */
     private function getCheapestProductPrice(array $order){
-        $min = (float)$order['items'][0]['unit-price'];
+        $min = (float)$order['items'][0]['total'];
         foreach ($order['items'] as $item) {
-            if ($min > (float)$item['unit-price']) {
-                $min = (float)$item['unit-price'];
+            if ($min > (float)$item['total']) {
+                $min = (float)$item['total'];
             }
         }
         return $min;
