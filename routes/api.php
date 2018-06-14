@@ -21,5 +21,5 @@ Route::get('{version}/discounts', VersionedRoute::getControllerClassPath('Discou
 //Discount rule management
 Route::get('{version}/rules', VersionedRoute::getControllerClassPath('DiscountRulesController', 'index'));
 Route::post('{version}/rules', VersionedRoute::getControllerClassPath('DiscountRulesController', 'store'));
-Route::put('{version}/rules', VersionedRoute::getControllerClassPath('DiscountRulesController', 'update'));
-Route::delete('{version}/rules', VersionedRoute::getControllerClassPath('DiscountRulesController', 'destroy'));
+Route::put('{version}/rules/{id}', VersionedRoute::getControllerClassPath('DiscountRulesController', 'update'));
+Route::delete('{version}/rules/{id}', VersionedRoute::getControllerClassPath('DiscountRulesController', 'destroy'));

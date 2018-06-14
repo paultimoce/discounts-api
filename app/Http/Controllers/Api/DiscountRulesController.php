@@ -32,7 +32,13 @@ class DiscountRulesController extends Controller
         return response()->json(['data' => DiscountRule::create($rule)], 201);
     }
 
-    public function update($id, UpdateDiscountRuleRequest $request)
+    /**
+     * @param string $version
+     * @param int $id
+     * @param UpdateDiscountRuleRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(string $version, int $id, UpdateDiscountRuleRequest $request)
     {
         $data = $request->all();
         $discountType = DiscountType::whereHandle($request->type)->first();
@@ -52,7 +58,12 @@ class DiscountRulesController extends Controller
         return response()->json(['data' => $rule]);
     }
 
-    public function destroy($id)
+    /**
+     * @param string $version
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy(string $version, int $id)
     {
         $rule = DiscountRule::find($id);
         if (!empty($rule)) {

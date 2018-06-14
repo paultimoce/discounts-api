@@ -5,85 +5,187 @@
     "version": "1"
   },
   "paths": {
-    "/api/v1/configurations": {
-      "get": {
-        "tags": [
-          "discount rule management"
-        ],
-        "summary": "Gets a configuration based on a launch code",
-        "operationId": "showConfiguration",
-        "parameters": [
-          {
-            "name": "launch_code",
-            "in": "query",
-            "description": "Launch code",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "fields",
-            "in": "query",
-            "description": "A comma separated list of fields which the api would return. If this is not provided, all allowed fields will be returned to the consumer",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "A single configuration containing multiple fields as requested"
-          }
-        }
-      }
-    },
-    "/api/v1/profiles": {
-      "get": {
-        "tags": [
-          "configuration"
-        ],
-        "summary": "Gets a profile based on a launch code",
-        "parameters": [
-          {
-            "name": "launch_code",
-            "in": "query",
-            "description": "Launch code",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "A single profile containing multiple fields as requested"
-          }
-        }
-      }
-    },
-    "/api/v1/versions/increment": {
+    "/oauth/post": {
       "post": {
-        "tags": [
-          "configuration"
-        ],
-        "summary": "Increments either the profile or the configuration version",
+        "tags": ["Authorization"],
+        "summary": "This endpoint generates an access token",
         "parameters": [
           {
-            "name": "launch_code",
-            "in": "query",
-            "description": "Launch code",
-            "required": true,
-            "type": "string"
+            "name":"grant_type",
+            "type": "string",
+            "required": "true",
+            "description": "lets use password here"
           },
           {
-            "name": "version_type",
-            "in": "query",
-            "description": "specify if we increment the profile or the configuration counter... allowed values: configuration, profile",
-            "required": true,
-            "type": "string"
+            "name":"username",
+            "type": "string",
+            "required": "true",
+            "description": "the provisioner script creates a tester@teamleader.com username"
+          },
+          {
+            "name":"password",
+            "type": "string",
+            "required": "true",
+            "description": "test123"
+          },
+          {
+            "name":"client_id",
+            "type": "integer",
+            "required": "true",
+            "description": "the provisioner script generates two clients ... id 1 and id 2 each of them with a secret... use one of them"
+          },
+          {
+            "name":"client_id",
+            "type": "string",
+            "required": "true",
+            "description": "the provisioner script generates two clients ... id 1 and id 2 each of them with a secret... use one of them"
           }
+        ]
+      }
+    },
+    "/api/v1/rules": {
+      "get": {
+        "tags": [
+          "Discount Rule Management (CRUD)"
         ],
+        "summary": "Gets a list of all available discount rules",
         "responses": {
           "200": {
-            "description": "A single configuration containing multiple fields as requested"
+            "description": "An array containing a list of discount rules"
           }
         }
+      },
+      "post": {
+        "tags": ["Discount Rule Management (CRUD)"],
+        "summary": "Creates a new discount rule",
+        "parameters": [
+          {
+            "name":"type",
+            "type":"string",
+            "required":true,
+            "description": "Accepted values for this are: percent_discount_when_total_amount_over_threshold, free_product_when_quantity_of_certain_category_over_threshold & percentage_discount_when_quantity_of_certain_category_over_threshold (for now)"
+          },
+          {
+            "name":"threshold",
+            "type":"integer",
+            "required": false,
+            "description": "This is the value to measure against and it is required if type is either percent_discount_when_total_amount_over_threshold or free_product_when_quantity_of_certain_category_over_threshold"
+          },
+          {
+            "name":"percentage",
+            "type":"integer",
+            "required": false,
+            "description": "This is the value of the percentage discount and it is required if type is either percent_discount_when_total_amount_over_threshold or percentage_discount_when_quantity_of_certain_category_over_threshold"
+          },
+          {
+            "name":"category",
+            "type":"integer",
+            "required": false,
+            "description": "This is the value of the category id and it is required if the type of the discount rule is either free_product_when_quantity_of_certain_category_over_threshold or percentage_discount_when_quantity_of_certain_category_over_threshold"
+          },
+          {
+            "name":"quantity",
+            "type":"integer",
+            "required": false,
+            "description": "This is the quantity and it is required if type of discount rule is percentage_discount_when_quantity_of_certain_category_over_threshold"
+          },
+          {
+            "name":"operator",
+            "type":"string",
+            "required": false,
+            "description": "The following operators are allowed: more, less, equal, at_least, at_most"
+          },
+          {
+            "name":"applies",
+            "type":"string",
+            "required": false,
+            "description": "This determines where to apply the discount. The following values are allowed: whole_order, cheapest_product"
+          }
+        ]
+      }
+    },
+    "/api/v1/rules/{id}": {
+      "put": {
+        "tags": ["Discount Rule Management (CRUD)"],
+        "summary": "updates an existing discount rule",
+        "parameters": [
+          {
+            "name":"type",
+            "type":"string",
+            "required":true,
+            "description": "Accepted values for this are: percent_discount_when_total_amount_over_threshold, free_product_when_quantity_of_certain_category_over_threshold & percentage_discount_when_quantity_of_certain_category_over_threshold (for now)"
+          },
+          {
+            "name":"threshold",
+            "type":"integer",
+            "required": false,
+            "description": "This is the value to measure against and it is required if type is either percent_discount_when_total_amount_over_threshold or free_product_when_quantity_of_certain_category_over_threshold"
+          },
+          {
+            "name":"percentage",
+            "type":"integer",
+            "required": false,
+            "description": "This is the value of the percentage discount and it is required if type is either percent_discount_when_total_amount_over_threshold or percentage_discount_when_quantity_of_certain_category_over_threshold"
+          },
+          {
+            "name":"category",
+            "type":"integer",
+            "required": false,
+            "description": "This is the value of the category id and it is required if the type of the discount rule is either free_product_when_quantity_of_certain_category_over_threshold or percentage_discount_when_quantity_of_certain_category_over_threshold"
+          },
+          {
+            "name":"quantity",
+            "type":"integer",
+            "required": false,
+            "description": "This is the quantity and it is required if type of discount rule is percentage_discount_when_quantity_of_certain_category_over_threshold"
+          },
+          {
+            "name":"operator",
+            "type":"string",
+            "required": false,
+            "description": "The following operators are allowed: more, less, equal, at_least, at_most"
+          },
+          {
+            "name":"applies",
+            "type":"string",
+            "required": false,
+            "description": "This determines where to apply the discount. The following values are allowed: whole_order, cheapest_product"
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["Discount Rule Management (CRUD)"],
+        "summary": "deletes an existing discount rule"
+      }
+    },
+    "/api/v1/discounts": {
+      "get": {
+        "summary": "Gets a list of discounts applying to a given order",
+        "tags": ["Discounts"],
+        "parameters": [
+          {
+            "name":"id",
+            "type":"integer",
+            "required":false
+          },
+          {
+            "name":"customer-id",
+            "type":"integer",
+            "required":true,
+            "description": "must correspond to an existing customer in the customers table"
+          },
+          {
+            "name":"items",
+            "type":"array",
+            "required":true,
+            "description": "must be an array of line products each containing product-id, unit-price, quantity and total fields"
+          },
+          {
+            "name": "total",
+            "type":"float",
+            "description": "the overall cost of the order"
+          }
+        ]
       }
     }
   },
