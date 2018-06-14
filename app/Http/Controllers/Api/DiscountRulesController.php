@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\DiscountType;
 use App\Http\Requests\UpdateDiscountRuleRequest;
 use Illuminate\Http\Request;
 use App\DiscountRule;
 use App\Http\Requests\CreateDiscountRuleRequest;
+use App\Http\Controllers\Controller;
 
 class DiscountRulesController extends Controller
 {

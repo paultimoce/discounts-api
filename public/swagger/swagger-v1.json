@@ -1,0 +1,91 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Discount API documentation",
+    "version": "1"
+  },
+  "paths": {
+    "/api/v1/configurations": {
+      "get": {
+        "tags": [
+          "discount rule management"
+        ],
+        "summary": "Gets a configuration based on a launch code",
+        "operationId": "showConfiguration",
+        "parameters": [
+          {
+            "name": "launch_code",
+            "in": "query",
+            "description": "Launch code",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "A comma separated list of fields which the api would return. If this is not provided, all allowed fields will be returned to the consumer",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A single configuration containing multiple fields as requested"
+          }
+        }
+      }
+    },
+    "/api/v1/profiles": {
+      "get": {
+        "tags": [
+          "configuration"
+        ],
+        "summary": "Gets a profile based on a launch code",
+        "parameters": [
+          {
+            "name": "launch_code",
+            "in": "query",
+            "description": "Launch code",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A single profile containing multiple fields as requested"
+          }
+        }
+      }
+    },
+    "/api/v1/versions/increment": {
+      "post": {
+        "tags": [
+          "configuration"
+        ],
+        "summary": "Increments either the profile or the configuration version",
+        "parameters": [
+          {
+            "name": "launch_code",
+            "in": "query",
+            "description": "Launch code",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "version_type",
+            "in": "query",
+            "description": "specify if we increment the profile or the configuration counter... allowed values: configuration, profile",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A single configuration containing multiple fields as requested"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {}
+}

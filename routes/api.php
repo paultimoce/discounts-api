@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Services\VersionedRoute;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,5 +14,12 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/discounts', 'DiscountsController@get');
-Route::middleware('auth:api')->resource('/rules', 'DiscountRulesController', ['except' => ['create', 'edit']]);
+
+//Get the discounts
+Route::get('{version}/discounts', VersionedRoute::getControllerClassPath('DiscountsController', 'get'));
+
+//Discount rule management
+Route::get('{version}/rules', VersionedRoute::getControllerClassPath('DiscountRulesController', 'index'));
+Route::post('{version}/rules', VersionedRoute::getControllerClassPath('DiscountRulesController', 'store'));
+Route::put('{version}/rules', VersionedRoute::getControllerClassPath('DiscountRulesController', 'update'));
+Route::delete('{version}/rules', VersionedRoute::getControllerClassPath('DiscountRulesController', 'destroy'));
