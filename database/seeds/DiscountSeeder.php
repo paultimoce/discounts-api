@@ -20,7 +20,7 @@ class DiscountSeeder extends Seeder
         //Create initial discount types
         $discountType1 = DiscountType::create([
             'handle' => 'percent_discount_when_total_amount_over_threshold',
-            'description' => 'A customer who has already bought for more (or less) than a set threshold value, gets a discount of a certain percentage on the whole order'
+            'description' => 'A customer who has already bought for more (less, equal, at most or at least) a set threshold value, gets a discount of a certain percentage on the whole order or the cheapest product'
         ]);
 
         $discountType2 = DiscountType::create([
