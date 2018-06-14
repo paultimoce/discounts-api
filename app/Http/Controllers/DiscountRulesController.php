@@ -28,7 +28,7 @@ class DiscountRulesController extends Controller
         $rule = $request->all();
         $rule['discount_type_id'] =  $discountType->id;
 
-        return response()->setStatusCode(201)->json(['data' => DiscountRule::create($rule)]);
+        return response()->json(['data' => DiscountRule::create($rule)], 201);
     }
 
     public function update($id, UpdateDiscountRuleRequest $request)
