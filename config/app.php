@@ -159,7 +159,8 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        App\Providers\VersioningServiceProvider::class
+        App\Providers\VersioningServiceProvider::class,
+        App\Providers\DiscountRuleServiceProvider::class
 
     ],
 
